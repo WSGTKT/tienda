@@ -2,7 +2,7 @@
 body {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
-  background: url('Imagenes/imagen1.jpg') no-repeat center center fixed;
+  background: url('Imagenes/imagen1.jpg') center fixed;
   background-size: cover;
   display: flex;
   align-items: center;
@@ -20,14 +20,14 @@ body {
   width: 100%;
   text-align: center;
   color: #fff;
-  border: 2px solid #00f0ff;
+  border: 2px solid #000808;
 }
 
 /* Títulos */
 h2 {
   margin-bottom: 20px;
   font-size: 26px;
-  color: #00f0ff;
+  color: #008cff;
   text-shadow: 0 0 10px #00f0ff;
 }
 
