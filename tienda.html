@@ -42,14 +42,14 @@
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (!usuario) {
-      window.location.href = "tienda.html";// Cambia a la ruta real de tu página
+      window.location.href = "index.html";// Cambia a la ruta real de tu página
     } else {
       welcomeMsg.textContent = `Bienvenido, ${usuario}`;
     }
 
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("usuarioLogueado");
-      window.location.href = "index.html"; // Cambia a la ruta real de tu página
+      window.location.href = "tienda.html"; // Cambia a la ruta real de tu página
     });
   </script>
 </body>
