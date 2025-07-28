@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login / Registro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-container">
+    <h2 id="formTitle">Iniciar Sesión</h2>
+
+    <form id="authForm">
+      <input type="email" id="email" placeholder="Correo electrónico" required />
+      <input type="password" id="password" placeholder="Contraseña" required />
+      <button type="submit" id="submitBtn">Entrar</button>
+      <p id="error" class="error-msg"></p>
+    </form>
+
+    <p>
+      <span id="toggleText">¿No tienes cuenta?</span>
+      <button id="toggleBtn">Crear Cuenta</button>
+    </p>
+  </div>
+
+  <script>
+    const form = document.getElementById("authForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const errorMsg = document.getElementById("error");
+    const toggleBtn = document.getElementById("toggleBtn");
+    const toggleText = document.getElementById("toggleText");
+    const formTitle = document.getElementById("formTitle");
+    const submitBtn = document.getElementById("submitBtn");
+
+    let isRegister = false;
+
+    toggleBtn.addEventListener("click", () => {
+      isRegister = !isRegister;
+      formTitle.textContent = isRegister ? "Crear Cuenta" : "Iniciar Sesión";
+      submitBtn.textContent = isRegister ? "Registrarse" : "Entrar";
+      toggleText.textContent = isRegister ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?";
+      toggleBtn.textContent = isRegister ? "Iniciar Sesión" : "Crear Cuenta";
+      errorMsg.textContent = "";
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      if (!email || !password) {
+        errorMsg.textContent = "Todos los campos son obligatorios.";
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("usuarios") || "{}");
+
+      if (isRegister) {
+        // Registro
+        if (users[email]) {
+          errorMsg.textContent = "El usuario ya existe.";
+        } else {
+          users[email] = password;
+          localStorage.setItem("usuarios", JSON.stringify(users));
+          errorMsg.style.color = "green";
+          errorMsg.textContent = "Cuenta creada con éxito. Ahora puedes iniciar sesión.";
+          toggleBtn.click(); // Cambia al modo login automáticamente
+        }
+      } else {
+        // Login
+        if (users[email] && users[email] === password) {
+          window.location.href = "tienda.html";
+        } else {
+          errorMsg.textContent = "Correo o contraseña incorrectos.";
+        }
+      }
+    });
+  </script>
+</body>
+</html>
