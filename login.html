@@ -1,81 +1,424 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login / Registro</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameZone - Acceso</title>
+    <style>
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            max-width: 90%;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .switch-form {
+            margin-top: 25px;
+            font-size: 0.95em;
+        }
+        .switch-form a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        .switch-form a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none; 
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .error-field {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: block;
+            text-align: right;
+        }
+
+        
+        .dashboard-container {
+            display: none; 
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            width: 600px;
+            max-width: 90%;
+        }
+        .dashboard-container h2 {
+            color: #28a745;
+            margin-bottom: 25px;
+        }
+        .dashboard-container p {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .dashboard-container button {
+            background-color: #dc3545;
+        }
+        .dashboard-container button:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2 id="formTitle">Iniciar Sesión</h2>
 
-    <form id="authForm">
-      <input type="email" id="email" placeholder="Correo electrónico" required />
-      <input type="password" id="password" placeholder="Contraseña" required />
-      <button type="submit" id="submitBtn">Entrar</button>
-      <p id="error" class="error-msg"></p>
-    </form>
+    <div class="container" id="auth-container">
+        <div id="login-form">
+            <h2>Iniciar Sesión</h2>
+            <div id="login-message" class="message"></div>
 
-    <p>
-      <span id="toggleText">¿No tienes cuenta?</span>
-      <button id="toggleBtn">Crear Cuenta</button>
-    </p>
-  </div>
+            <div class="form-group">
+                <label for="login-username-email">Nombre de Usuario</label>
+                <input type="text" id="login-username-email" placeholder="Nombre de Usuario/Correo Electronico">
+                <span class="error-field" id="login-username-email-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Contraseña:</label>
+                <input type="password" id="login-password" placeholder="Mínimo 6 caracteres">
+                <span class="error-field" id="login-password-error"></span>
+            </div>
+            <button onclick="handleLogin()">Iniciar Sesión</button>
+            <div class="switch-form">
+                ¿No tienes una cuenta? <a href="#" onclick="showRegisterForm()">Regístrate aquí</a>
+            </div>
+        </div>
 
-  <script>
-    const form = document.getElementById("authForm");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const errorMsg = document.getElementById("error");
-    const toggleBtn = document.getElementById("toggleBtn");
-    const toggleText = document.getElementById("toggleText");
-    const formTitle = document.getElementById("formTitle");
-    const submitBtn = document.getElementById("submitBtn");
+        <div id="register-form" style="display: none;">
+            <h2>Registrarse</h2>
+            <div id="register-message" class="message"></div>
 
-    let isRegister = false;
+            <div class="form-group">
+                <label for="register-username">Nombre de Usuario:</label>
+                <input type="text" id="register-username" placeholder="Elige un nombre de usuario">
+                <span class="error-field" id="register-username-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="register-email">Email:</label>
+                <input type="email" id="register-email" placeholder="Tu email">
+                <span class="error-field" id="register-email-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="register-password">Contraseña:</label>
+                <input type="password" id="register-password" placeholder="Mínimo 6 caracteres">
+                <span class="error-field" id="register-password-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="register-confirm-password">Confirmar Contraseña:</label>
+                <input type="password" id="register-confirm-password" placeholder="Repite tu contraseña">
+                <span class="error-field" id="register-confirm-password-error"></span>
+            </div>
+            <button onclick="handleRegister()">Registrarse</button>
+            <div class="switch-form">
+                ¿Ya tienes una cuenta? <a href="#" onclick="showLoginForm()">Iniciar Sesión</a>
+            </div>
+        </div>
+    </div>
 
-    toggleBtn.addEventListener("click", () => {
-      isRegister = !isRegister;
-      formTitle.textContent = isRegister ? "Crear Cuenta" : "Iniciar Sesión";
-      submitBtn.textContent = isRegister ? "Registrarse" : "Entrar";
-      toggleText.textContent = isRegister ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?";
-      toggleBtn.textContent = isRegister ? "Iniciar Sesión" : "Crear Cuenta";
-      errorMsg.textContent = "";
-    });
+    <div class="dashboard-container" id="dashboard-container">
+        <h2>¡Bienvenido a la Plataforma GameZone!</h2>
+        <p>Has iniciado sesión como: <strong id="logged-in-username"></strong></p>
+        <p>Este es tu dashboard, donde iría el contenido de los juegos, tu perfil, etc.</p>
+        <button onclick="handleLogout()">Cerrar Sesión</button>
+    </div>
 
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
+    <script>
+        
+        const authContainer = document.getElementById('auth-container');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const dashboardContainer = document.getElementById('dashboard-container');
 
-      if (!email || !password) {
-        errorMsg.textContent = "Todos los campos son obligatorios.";
-        return;
-      }
+        const loginMessage = document.getElementById('login-message');
+        const registerMessage = document.getElementById('register-message');
+        const loggedInUsernameDisplay = document.getElementById('logged-in-username');
 
-      let users = JSON.parse(localStorage.getItem("usuarios") || "{}");
+        
+        const loginUsernameEmailInput = document.getElementById('login-username-email');
+        const loginPasswordInput = document.getElementById('login-password');
+        const loginUsernameEmailError = document.getElementById('login-username-email-error');
+        const loginPasswordError = document.getElementById('login-password-error');
 
-      if (isRegister) {
-        // Registro
-        if (users[email]) {
-          errorMsg.textContent = "El usuario ya existe.";
-        } else {
-          users[email] = password;
-          localStorage.setItem("usuarios", JSON.stringify(users));
-          errorMsg.style.color = "green";
-          errorMsg.textContent = "Cuenta creada con éxito. Ahora puedes iniciar sesión.";
-          toggleBtn.click(); // Cambia al modo login automáticamente
+        
+        const registerUsernameInput = document.getElementById('register-username');
+        const registerEmailInput = document.getElementById('register-email');
+        const registerPasswordInput = document.getElementById('register-password');
+        const registerConfirmPasswordInput = document.getElementById('register-confirm-password');
+        const registerUsernameError = document.getElementById('register-username-error');
+        const registerEmailError = document.getElementById('register-email-error');
+        const registerPasswordError = document.getElementById('register-password-error');
+        const registerConfirmPasswordError = document.getElementById('register-confirm-password-error');
+
+
+        
+        function showMessage(element, type, message) {
+            element.className = `message ${type}`;
+            element.textContent = message;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000); 
         }
-      } else {
-        // Login
-        if (users[email] && users[email] === password) {
-          window.location.href = "tienda.html";
-        } else {
-          errorMsg.textContent = "Correo o contraseña incorrectos.";
+
+       
+        function clearFieldErrors() {
+            document.querySelectorAll('.error-field').forEach(el => el.textContent = '');
         }
-      }
-    });
-  </script>
+
+        
+        function getUsers() {
+            const users = localStorage.getItem('users');
+            return users ? JSON.parse(users) : [];
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function getLoggedInUser() {
+            return localStorage.getItem('loggedInUser');
+        }
+
+        function setLoggedInUser(username) {
+            localStorage.setItem('loggedInUser', username);
+        }
+
+        function clearLoggedInUser() {
+            localStorage.removeItem('loggedInUser');
+        }
+
+       
+        function showRegisterForm() {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            clearFieldErrors();
+            loginMessage.style.display = 'none'; 
+            registerMessage.style.display = 'none'; 
+        }
+
+        
+        function showLoginForm() {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            clearFieldErrors();
+            loginMessage.style.display = 'none';
+            registerMessage.style.display = 'none'; 
+        }
+
+       
+        function showDashboard(username) {
+            authContainer.style.display = 'none';
+            dashboardContainer.style.display = 'block';
+            loggedInUsernameDisplay.textContent = username;
+        }
+
+        
+        function showAuthForms() {
+            authContainer.style.display = 'block';
+            dashboardContainer.style.display = 'none';
+        }
+        
+        
+        function handleRegister() {
+            clearFieldErrors(); 
+
+            const username = registerUsernameInput.value.trim();
+            const email = registerEmailInput.value.trim();
+            const password = registerPasswordInput.value;
+            const confirmPassword = registerConfirmPasswordInput.value;
+
+            let isValid = true;
+
+            if (username.length < 4) {
+                registerUsernameError.textContent = "El nombre de usuario debe tener al menos 4 caracteres.";
+                isValid = false;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                registerEmailError.textContent = "Introduce un email válido.";
+                isValid = false;
+            }
+            if (password.length < 6) {
+                registerPasswordError.textContent = "La contraseña debe tener al menos 6 caracteres.";
+                isValid = false;
+            }
+            if (password !== confirmPassword) {
+                registerConfirmPasswordError.textContent = "Las contraseñas no coinciden.";
+                isValid = false;
+            }
+
+            if (!isValid) {
+                showMessage(registerMessage, 'error', 'Por favor, corrige los errores en el formulario.');
+                return;
+            }
+
+            const users = getUsers();
+
+           
+            if (users.some(u => u.username === username)) {
+                registerUsernameError.textContent = "Este nombre de usuario ya está en uso.";
+                showMessage(registerMessage, 'error', 'El nombre de usuario ya existe.');
+                return;
+            }
+            if (users.some(u => u.email === email)) {
+                registerEmailError.textContent = "Este email ya está registrado.";
+                showMessage(registerMessage, 'error', 'Este email ya está registrado.');
+                return;
+            }
+
+            const hashedPassword = btoa(password); 
+
+            users.push({ username, email, password_hash: hashedPassword });
+            saveUsers(users);
+
+            showMessage(registerMessage, 'success', '¡Registro exitoso! Ya puedes iniciar sesión.');
+            setTimeout(showLoginForm, 2000); 
+        }
+
+        
+        function handleLogin() {
+            clearFieldErrors();
+
+            const identifier = loginUsernameEmailInput.value.trim();
+            const password = loginPasswordInput.value;
+
+            let isValid = true;
+            if (identifier === '') {
+                loginUsernameEmailError.textContent = "El campo no puede estar vacío.";
+                isValid = false;
+            }
+            if (password === '') {
+                loginPasswordError.textContent = "La contraseña no puede estar vacía.";
+                isValid = false;
+            }
+
+            if (!isValid) {
+                showMessage(loginMessage, 'error', 'Por favor, rellena todos los campos.');
+                return;
+            }
+
+            const users = getUsers();
+            const user = users.find(u => u.username === identifier || u.email === identifier);
+
+            if (user) {
+                
+                if (btoa(password) === user.password_hash) {
+                    setLoggedInUser(user.username);
+                    showMessage(loginMessage, 'success', '¡Inicio de sesión exitoso!');
+                    showDashboard(user.username);
+
+                     setTimeout(() => {
+                window.location.href = "videojuegos.html"; // Cambia a la ruta real de tu página
+            }, 2000);
+            
+                } else {
+                    showMessage(loginMessage, 'error', 'Usuario o contraseña incorrectos.');
+                    loginPasswordError.textContent = "Contraseña incorrecta.";
+                }
+            } else {
+                showMessage(loginMessage, 'error', 'Usuario o contraseña incorrectos.');
+                loginUsernameEmailError.textContent = "Usuario o email no encontrado.";
+            }
+        }
+
+        
+        function handleLogout() {
+            clearLoggedInUser();
+            showMessage(loginMessage, 'success', 'Has cerrado sesión.');
+            showAuthForms();
+        
+            loginUsernameEmailInput.value = '';
+            loginPasswordInput.value = '';
+        }
+
+       
+        window.onload = function() {
+            const loggedInUser = getLoggedInUser();
+            if (loggedInUser) {
+                showDashboard(loggedInUser);
+            } else {
+                showAuthForms();
+            }
+        };
+
+    </script>
 </body>
 </html>
