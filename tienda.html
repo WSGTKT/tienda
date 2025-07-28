@@ -9,7 +9,8 @@
 <body>
   <header>
     <h1>Tienda de Videojuegos</h1>
-    <p>Bienvenido a nuestra tienda</p>
+    <p id="welcomeMsg">Bienvenido</p>
+    <button id="logoutBtn">Cerrar sesión</button>
   </header>
 
   <main class="game-store">
@@ -26,6 +27,89 @@
       <p>$49.99</p>
       <button>Comprar</button>
     </div>
+
+    <div class="game-card">
+      <img src="https://via.placeholder.com/150" alt="Juego 3">
+      <h3>Juego 3</h3>
+      <p>$19.99</p>
+      <button>Comprar</button>
+    </div>
   </main>
+
+  <script>
+    const usuario = localStorage.getItem("usuarioLogueado");
+    const welcomeMsg = document.getElementById("welcomeMsg");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!usuario) {
+      window.location.href = "index.html";
+    } else {
+      welcomeMsg.textContent = `Bienvenido, ${usuario}`;
+    }
+
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("usuarioLogueado");
+      window.location.href = "index.html";
+    });
+  </script>
 </body>
 </html>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+  }
+
+  header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+  }
+
+  .game-store {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  .game-card {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin: 10px;
+    padding: 15px;
+    width: 200px;
+    text-align: center;
+  }
+
+  .game-card img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .game-card h3 {
+    font-size: 1.2em;
+    margin: 10px 0;
+  }
+
+  .game-card p {
+    font-size: 1.1em;
+    color: #333;
+  }
+
+  .game-card button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .game-card button:hover {
+    background-color: #218838;
+  }
