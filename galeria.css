@@ -1,6 +1,27 @@
-body{
-    background-color: #FFF5D5;
-}
-header{
-     background-color: aqua;
-}
+.game-card img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .game-card h3 {
+    font-size: 1.2em;
+    margin: 10px 0;
+  }
+
+  .game-card p {
+    font-size: 1.1em;
+    color: #333;
+  }
+
+  .game-card button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .game-card button:hover {
+    background-color: #218838;
+  }
