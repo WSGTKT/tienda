@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login GameZone</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 350px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    h2 { text-align: center; color: #333; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover { background-color: #0056b3; }
+    .message {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .switch {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.9em;
+    }
+    .switch a {
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="login-form">
+    <h2>Iniciar Sesión</h2>
+    <input type="text" id="login-user" placeholder="Usuario o Email">
+    <input type="password" id="login-pass" placeholder="Contraseña">
+    <button onclick="handleLogin()">Entrar</button>
+    <p class="message" id="login-message"></p>
+    <div class="switch">¿No tienes cuenta? <a href="#" onclick="toggleForms()">Regístrate</a></div>
+  </div>
+
+  <div id="register-form" style="display: none;">
+    <h2>Registrarse</h2>
+    <input type="text" id="reg-user" placeholder="Usuario">
+    <input type="email" id="reg-email" placeholder="Email">
+    <input type="password" id="reg-pass" placeholder="Contraseña">
+    <input type="password" id="reg-pass2" placeholder="Confirmar Contraseña">
+    <button onclick="handleRegister()">Crear Cuenta</button>
+    <p class="message" id="register-message"></p>
+    <div class="switch">¿Ya tienes cuenta? <a href="#" onclick="toggleForms()">Inicia sesión</a></div>
+  </div>
+</div>
+
+<script>
+  function toggleForms() {
+    const login = document.getElementById("login-form");
+    const register = document.getElementById("register-form");
+    login.style.display = login.style.display === "none" ? "block" : "none";
+    register.style.display = register.style.display === "none" ? "block" : "none";
+    document.getElementById("login-message").textContent = "";
+    document.getElementById("register-message").textContent = "";
+  }
+
+  function getUsers() {
+    return JSON.parse(localStorage.getItem("users") || "[]");
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem("users", JSON.stringify(users));
+  }
+
+  function handleRegister() {
+    const username = document.getElementById("reg-user").value.trim();
+    const email = document.getElementById("reg-email").value.trim();
+    const pass = document.getElementById("reg-pass").value;
+    const pass2 = document.getElementById("reg-pass2").value;
+    const msg = document.getElementById("register-message");
+
+    if (username.length < 4 || !email.includes("@") || pass.length < 6 || pass !== pass2) {
+      msg.textContent = "Datos inválidos o contraseñas no coinciden.";
+      return;
+    }
+
+    const users = getUsers();
+    if (users.some(u => u.username === username || u.email === email)) {
+      msg.textContent = "Usuario o correo ya registrado.";
+      return;
+    }
+
+    users.push({ username, email, password: btoa(pass) });
+    saveUsers(users);
+    msg.style.color = "green";
+    msg.textContent = "Registro exitoso. Ahora puedes iniciar sesión.";
+    setTimeout(toggleForms, 2000);
+  }
+
+  function handleLogin() {
+    const userInput = document.getElementById("login-user").value.trim();
+    const passInput = document.getElementById("login-pass").value;
+    const msg = document.getElementById("login-message");
+
+    const users = getUsers();
+    const user = users.find(u => u.username === userInput || u.email === userInput);
+
+    if (user && btoa(passInput) === user.password) {
+      localStorage.setItem("loggedInUser", user.username);
+      window.location.href = "tienda.html";
+    } else {
+      msg.textContent = "Usuario o contraseña incorrectos.";
+    }
+  }
+</script>
+
+</body>
+</html>

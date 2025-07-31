@@ -4,112 +4,111 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tienda de Videojuegos</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    #logoutBtn {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: #dc3545;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .game-store {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+    .game-card {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin: 10px;
+      padding: 15px;
+      width: 200px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .game-card img {
+      width: 100%;
+      height: 120px;
+      background: #ddd;
+    }
+    .game-card h3 { margin: 10px 0 5px; }
+    .game-card p { color: #333; }
+    .game-card button {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .game-card button:hover {
+      background: #218838;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Tienda de Videojuegos</h1>
-    <p id="welcomeMsg">Bienvenido</p>
-    <button id="logoutBtn">Cerrar sesión</button>
-  </header>
 
-  <main class="game-store">
-    <div class="game-card">
-      <img src="" alt="Juego 1">
-      <h3>Juego 1</h3>
-      <p>Q29.99</p>
-      <button>Comprar</button>
-    </div>
+<header>
+  <h1>Tienda de Videojuegos</h1>
+  <p id="welcomeMsg">Bienvenido</p>
+  <button id="logoutBtn">Cerrar sesión</button>
+</header>
 
-    <div class="game-card">
-      <img src="" alt="Juego 2">
-      <h3>Juego 2</h3>
-      <p>Q49.99</p>
-      <button>Comprar</button>
-    </div>
+<main class="game-store">
+  <div class="game-card">
+    <img src="" alt="Juego 1">
+    <h3>Juego 1</h3>
+    <p>Q29.99</p>
+    <button>Comprar</button>
+  </div>
+  <div class="game-card">
+    <img src="" alt="Juego 2">
+    <h3>Juego 2</h3>
+    <p>Q49.99</p>
+    <button>Comprar</button>
+  </div>
+  <div class="game-card">
+    <img src="" alt="Juego 3">
+    <h3>Juego 3</h3>
+    <p>Q19.99</p>
+    <button>Comprar</button>
+  </div>
+</main>
 
-    <div class="game-card">
-      <img src="" alt="Juego 3">
-      <h3>Juego 3</h3>
-      <p>Q19.99</p>
-      <button>Comprar</button>
-    </div>
-  </main>
+<script>
+  const usuario = localStorage.getItem("loggedInUser");
+  const welcomeMsg = document.getElementById("welcomeMsg");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-  <script>
-    const usuario = localStorage.getItem("usuarioLogueado");
-    const welcomeMsg = document.getElementById("welcomeMsg");
-    const logoutBtn = document.getElementById("logoutBtn");
+  if (!usuario) {
+    window.location.href = "login.html";
+  } else {
+    welcomeMsg.textContent = `Bienvenido, ${usuario}`;
+  }
 
-    if (!usuario) {
-      window.location.href = "index.html";// Cambia a la ruta real de tu página
-    } else {
-      welcomeMsg.textContent = `Bienvenido, ${usuario}`;
-    }
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "login.html";
+  });
+</script>
 
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("usuarioLogueado");
-      window.location.href = "tienda.html"; // Cambia a la ruta real de tu página
-    });
-  </script>
 </body>
 </html>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-  }
-
-  header {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-  }
-
-  .game-store {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
-
-  .game-card {
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin: 10px;
-    padding: 15px;
-    width: 200px;
-    text-align: center;
-  }
-
-  .game-card img {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .game-card h3 {
-    font-size: 1.2em;
-    margin: 10px 0;
-  }
-
-  .game-card p {
-    font-size: 1.1em;
-    color: #333;
-  }
-
-  .game-card button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-
-  .game-card button:hover {
-    background-color: #218838;
-  }
