@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center">Panel de Administración de la Tienda</h1>
+    <hr>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <button id="showUsersBtn" class="btn btn-primary btn-block mb-3">Gestionar Usuarios</button>
+        </div>
+        <div class="col-md-4">
+            <button id="showGamesBtn" class="btn btn-success btn-block mb-3">Gestionar Juegos</button>
+        </div>
+        <div class="col-md-4">
+            <button id="showDevelopersBtn" class="btn btn-info btn-block mb-3">Gestionar Desarrolladores</button>
+        </div>
+    </div>
+    <hr>
+
+    <div id="usersSection" style="display: none;">
+        <h2>Gestión de Usuarios</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="gamesSection" style="display: none;">
+        <h2>Gestión de Juegos</h2>
+        <button id="addGameBtn" class="btn btn-success mb-3">Añadir Nuevo Juego</button>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="gamesTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="developersSection" style="display: none;">
+        <h2>Gestión de Desarrolladores</h2>
+        <button id="addDeveloperBtn" class="btn btn-info mb-3">Añadir Nuevo Desarrollador</button>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Juegos Asignados</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="developersTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const userRole = localStorage.getItem("userRole");
+    if (userRole !== "admin") {
+        alert("Acceso denegado. Solo administradores.");
+        window.location.href = "login.html";
+    }
+
+    // Funciones para CRUD de Usuarios
+    async function loadUsers() {
+        const response = await fetch('api.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_users' })
+        });
+        const data = await response.json();
+        const tbody = document.getElementById('usersTableBody');
+        tbody.innerHTML = '';
+        data.users.forEach(user => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${user.username}</td>
+                <td>${user.email}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" onclick="editUser('${user.username}', '${user.email}')">Editar</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.username}')">Eliminar</button>
+                </td>
+            `;
+        });
+    }
+
+    async function editUser(username, email) {
+        const newUsername = prompt("Nuevo nombre de usuario:", username);
+        const newEmail = prompt("Nuevo email:", email);
+        if (newUsername && newEmail) {
+            await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'update_user', oldUsername: username, newUsername, newEmail })
+            });
+            loadUsers();
+        }
+    }
+
+    async function deleteUser(username) {
+        if (confirm(`¿Estás seguro de eliminar al usuario ${username}?`)) {
+            await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete_user', username })
+            });
+            loadUsers();
+        }
+    }
+
+    // Funciones para CRUD de Juegos (Cursos)
+    async function loadGames() {
+        const response = await fetch('api.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_games' })
+        });
+        const data = await response.json();
+        const tbody = document.getElementById('gamesTableBody');
+        tbody.innerHTML = '';
+        data.games.forEach(game => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${game.titulo}</td>
+                <td>Q${game.precio.toFixed(2)}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" onclick="editGame('${game.titulo}', ${game.precio})">Editar</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteGame('${game.titulo}')">Eliminar</button>
+                </td>
+            `;
+        });
+    }
+
+    async function addGame() {
+        const titulo = prompt("Título del juego:");
+        const precio = prompt("Precio:");
+        const imagen = prompt("URL de la imagen:");
+        if (titulo && precio && imagen) {
+            const newGame = { titulo, precio: parseFloat(precio), imagen };
+            await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'add_game', game: newGame })
+            });
+            loadGames();
+        }
+    }
+    
+    async function editGame(titulo, precio) {
+        const newTitulo = prompt("Nuevo título:", titulo);
+        const newPrecio = prompt("Nuevo precio:", precio);
+        if (newTitulo && newPrecio) {
+            const newGame = { titulo: newTitulo, precio: parseFloat(newPrecio), imagen: '' }; // Imagen se mantendría
+            await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'update_game', oldTitle: titulo, newGame })
+            });
+            loadGames();
+        }
+    }
+
+    async function deleteGame(titulo) {
+        if (confirm(`¿Estás seguro de eliminar el juego ${titulo}?`)) {
+            await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete_game', title: titulo })
+            });
+            loadGames();
+        }
+    }
+
+    // Funciones para CRUD de Desarrolladores (Maestros)
+    async function loadDevelopers() {
+        const response = await fetch('api.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_developers' })
+        });
+        const data = await response.json();
+        const tbody = document.getElementById('developersTableBody');
+        tbody.innerHTML = '';
+        data.developers.forEach(dev => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${dev.nombre}</td>
+                <td>${dev.juegos_asignados.join(', ')}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" onclick="editDeveloper('${dev.nombre}')">Editar</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteDeveloper('${dev.nombre}')">Eliminar</button>
+                </td>
+            `;
+        });
+    }
+
+    async function addDeveloper() {
+        const nombre = prompt("Nombre del desarrollador:");
+        if (nombre) {
+            const newDev = { nombre, juegos_asignados: [] };
+            await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'add_developer', developer: newDev })
+            });
+            loadDevelopers();
+        }
+    }
+    
+    async function editDeveloper(nombre) {
+        const newNombre = prompt("Nuevo nombre del desarrollador:", nombre);
+        if (newNombre) {
+            // Lógica para editar juegos asignados
+            const newDev = { nombre: newNombre, juegos_asignados: [] };
+            await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'update_developer', oldName: nombre, newDeveloper: newDev })
+            });
+            loadDevelopers();
+        }
+    }
+
+    async function deleteDeveloper(nombre) {
+        if (confirm(`¿Estás seguro de eliminar al desarrollador ${nombre}?`)) {
+            await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete_developer', name: nombre })
+            });
+            loadDevelopers();
+        }
+    }
+
+    document.getElementById('showUsersBtn').addEventListener('click', () => {
+        document.getElementById('usersSection').style.display = 'block';
+        document.getElementById('gamesSection').style.display = 'none';
+        document.getElementById('developersSection').style.display = 'none';
+        loadUsers();
+    });
+
+    document.getElementById('showGamesBtn').addEventListener('click', () => {
+        document.getElementById('usersSection').style.display = 'none';
+        document.getElementById('gamesSection').style.display = 'block';
+        document.getElementById('developersSection').style.display = 'none';
+        loadGames();
+    });
+    
+    document.getElementById('addGameBtn').addEventListener('click', addGame);
+
+    document.getElementById('showDevelopersBtn').addEventListener('click', () => {
+        document.getElementById('usersSection').style.display = 'none';
+        document.getElementById('gamesSection').style.display = 'none';
+        document.getElementById('developersSection').style.display = 'block';
+        loadDevelopers();
+    });
+    
+    document.getElementById('addDeveloperBtn').addEventListener('click', addDeveloper);
+</script>
+</body>
+</html>

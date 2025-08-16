@@ -1,114 +1,263 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tienda de Videojuegos</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #333;
-      color: white;
-      padding: 15px;
-      text-align: center;
-    }
-    #logoutBtn {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      background: #dc3545;
-      border: none;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .game-store {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 20px;
-    }
-    .game-card {
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      margin: 10px;
-      padding: 15px;
-      width: 200px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    .game-card img {
-      width: 100%;
-      height: 120px;
-      background: #ddd;
-    }
-    .game-card h3 { margin: 10px 0 5px; }
-    .game-card p { color: #333; }
-    .game-card button {
-      background: #28a745;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .game-card button:hover {
-      background: #218838;
-    }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tienda GameZone</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <img src="Imagenes/logo.jpg" alt="Logo de GameZone" />
+        </div>
+        <ul class="nav-links">
+          <li><a href="#">Inicio</a></li>
+          <li><a href="#">Categorías</a></li>
+          <li><a href="#">Ofertas</a></li>
+          <li><a href="#">Soporte</a></li>
+        </ul>
+        <div class="nav-icons">
+          <span id="welcomeMsg" style="color: white; font-weight: bold; margin-right: 15px;"></span>
+          <img
+            src="Imagenes/carrito.jpg"
+            alt="Carrito de compras"
+            class="cart-icon"
+            id="cart-icon"
+          />
+          <span id="cart-count">0</span>
+        </div>
+      </nav>
+    </header>
 
-<header>
-  <h1>Tienda de Videojuegos</h1>
-  <p id="welcomeMsg">Bienvenido</p>
-  <button id="logoutBtn">Cerrar sesión</button>
-</header>
+    <main>
+      <section class="banner">
+        <h1>¡Descubre la próxima generación de juegos!</h1>
+      </section>
 
-<main class="game-store">
-  <div class="game-card">
-    <img src="" alt="Juego 1">
-    <h3>Juego 1</h3>
-    <p>Q29.99</p>
-    <button>Comprar</button>
-  </div>
-  <div class="game-card">
-    <img src="" alt="Juego 2">
-    <h3>Juego 2</h3>
-    <p>Q49.99</p>
-    <button>Comprar</button>
-  </div>
-  <div class="game-card">
-    <img src="" alt="Juego 3">
-    <h3>Juego 3</h3>
-    <p>Q19.99</p>
-    <button>Comprar</button>
-  </div>
-</main>
+      <section class="store">
+        <h2>Últimos Lanzamientos</h2>
+        <div class="game-grid" id="store">
+          </div>
+      </section>
+    </main>
 
-<script>
-  const usuario = localStorage.getItem("loggedInUser");
-  const welcomeMsg = document.getElementById("welcomeMsg");
-  const logoutBtn = document.getElementById("logoutBtn");
+    <footer>
+      <p>&copy; 2024 GameZone. Todos los derechos reservados.</p>
+    </footer>
 
-  if (!usuario) {
-    window.location.href = "login.html";
-  } else {
-    welcomeMsg.textContent = `Bienvenido, ${usuario}`;
-  }
+    <div id="cart-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Tu Carrito de Compras</h2>
+        <ul id="cart-items">
+          </ul>
+        <p>Total: Q<span id="cart-total">0.00</span></p>
+        <button id="checkout-btn">Pagar</button>
+      </div>
+    </div>
 
-  logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("loggedInUser");
-    window.location.href = "login.html";
-  });
-</script>
+    <div id="payment-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Información de Pago</h2>
+        <form id="payment-form">
+          <label for="card-number">Número de Tarjeta:</label>
+          <input
+            type="text"
+            id="card-number"
+            name="card-number"
+            required
+            pattern="[0-9]{16}"
+            title="Debe contener 16 dígitos"
+          />
+          <label for="card-holder">Titular de la Tarjeta:</label>
+          <input
+            type="text"
+            id="card-holder"
+            name="card-holder"
+            required
+          />
+          <label for="expiry-date">Fecha de Vencimiento (MM/AA):</label>
+          <input
+            type="text"
+            id="expiry-date"
+            name="expiry-date"
+            required
+            pattern="(0[1-9]|1[0-2])\/\d{2}"
+            title="Formato MM/AA"
+          />
+          <label for="cvv">CVV:</label>
+          <input
+            type="text"
+            id="cvv"
+            name="cvv"
+            required
+            pattern="[0-9]{3,4}"
+            title="Debe contener 3 o 4 dígitos"
+          />
+          <label for="email">Email para Recibo:</label>
+          <input type="email" id="email" name="email" required />
+          <button type="submit">Confirmar Pago</button>
+        </form>
+        <p id="payment-message"></p>
+      </div>
+    </div>
 
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const usuario = localStorage.getItem("loggedInUser");
+        const role = localStorage.getItem("userRole");
+
+        if (!usuario) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        if (role === 'admin') {
+          window.location.href = "admin.html";
+          return;
+        }
+
+        document.getElementById("welcomeMsg").textContent = `Bienvenido, ${usuario}`;
+
+        const store = document.getElementById("store");
+        const cartIcon = document.getElementById("cart-icon");
+        const cartModal = document.getElementById("cart-modal");
+        const closeModalBtn = cartModal.querySelector(".close-button");
+        const cartItemsList = document.getElementById("cart-items");
+        const cartTotalSpan = document.getElementById("cart-total");
+        const cartCountSpan = document.getElementById("cart-count");
+        const checkoutBtn = document.getElementById("checkout-btn");
+
+        const paymentModal = document.getElementById("payment-modal");
+        const closePaymentBtn = paymentModal.querySelector(".close-button");
+        const paymentForm = document.getElementById("payment-form");
+        const paymentMessage = document.getElementById("payment-message");
+        
+        let juegos = [];
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        async function loadGames() {
+          const response = await fetch('api.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_games' })
+          });
+          const data = await response.json();
+          juegos = data.games;
+          renderGames();
+        }
+
+        function renderGames() {
+          store.innerHTML = '';
+          juegos.forEach((juego, i) => {
+            const card = document.createElement("div");
+            card.className = "game-card";
+            card.innerHTML = `
+              <img src="${juego.imagen}" alt="${juego.titulo}">
+              <h3>${juego.titulo}</h3>
+              <p>Q${juego.precio.toFixed(2)}</p>
+              <button data-index="${i}">Comprar</button>
+            `;
+            store.appendChild(card);
+          });
+        }
+
+        function renderCart() {
+          cartItemsList.innerHTML = "";
+          let total = 0;
+          cart.forEach((item, index) => {
+            const li = document.createElement("li");
+            li.innerHTML = `${item.titulo} - Q${item.precio.toFixed(2)} 
+              <button class="remove-btn" data-index="${index}">Eliminar</button>`;
+            cartItemsList.appendChild(li);
+            total += item.precio;
+          });
+          cartTotalSpan.textContent = total.toFixed(2);
+          cartCountSpan.textContent = cart.length;
+        }
+
+        function addToCart(index) {
+          cart.push(juegos[index]);
+          localStorage.setItem("cart", JSON.stringify(cart));
+          renderCart();
+          alert(`${juegos[index].titulo} ha sido añadido al carrito.`);
+        }
+
+        function removeFromCart(index) {
+          cart.splice(index, 1);
+          localStorage.setItem("cart", JSON.stringify(cart));
+          renderCart();
+        }
+
+        store.addEventListener("click", (e) => {
+          if (e.target.tagName === "BUTTON") {
+            const index = e.target.getAttribute("data-index");
+            addToCart(index);
+          }
+        });
+
+        cartItemsList.addEventListener("click", (e) => {
+          if (e.target.classList.contains("remove-btn")) {
+            const index = e.target.getAttribute("data-index");
+            removeFromCart(index);
+          }
+        });
+
+        cartIcon.addEventListener("click", () => {
+          cartModal.classList.remove("hidden");
+        });
+
+        closeModalBtn.addEventListener("click", () => {
+          cartModal.classList.add("hidden");
+        });
+
+        checkoutBtn.addEventListener("click", () => {
+          if (cart.length === 0) {
+            alert("Tu carrito está vacío.");
+            return;
+          }
+          cartModal.classList.add("hidden");
+          paymentModal.classList.remove("hidden");
+        });
+
+        closePaymentBtn.addEventListener("click", () => {
+          paymentModal.classList.add("hidden");
+        });
+
+        paymentForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          paymentMessage.textContent = "Procesando pago...";
+          
+          setTimeout(() => {
+            paymentMessage.textContent = "¡Pago exitoso! Se ha enviado un recibo a tu correo.";
+            cart = [];
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+            paymentForm.reset();
+            setTimeout(() => {
+                paymentModal.classList.add("hidden");
+            }, 2000);
+          }, 2000);
+        });
+
+        renderCart();
+        loadGames();
+      });
+    </script>
+  </body>
 </html>
+

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login GameZone</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -15,24 +16,24 @@
       margin: 0;
     }
     .container {
-      background-color: white;
+      background-color: rgb(0, 0, 0);
       padding: 30px;
       border-radius: 10px;
       width: 350px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
-    h2 { text-align: center; color: #333; }
-    input {
+    h2 { text-align: center; color: #000000; }
+    input { 
       width: 100%;
       padding: 10px;
       margin: 8px 0;
-      border: 1px solid #ccc;
+      border: 1px solid #000000;
       border-radius: 5px;
     }
     button {
       width: 100%;
       padding: 12px;
-      background-color: #007bff;
+      background-color: #013e7e;
       color: white;
       border: none;
       border-radius: 5px;
@@ -41,7 +42,7 @@
     }
     button:hover { background-color: #0056b3; }
     .message {
-      color: red;
+      color: rgb(237, 237, 237);
       text-align: center;
       margin-top: 10px;
     }
@@ -60,6 +61,9 @@
 
 <div class="container">
   <div id="login-form">
+    <div style="text-align: center;">
+      <img src="Imagenes/logo.jpg" alt="Logo" width="350" height="200">
+    </div>
     <h2>Iniciar Sesión</h2>
     <input type="text" id="login-user" placeholder="Usuario o Email">
     <input type="password" id="login-pass" placeholder="Contraseña">
@@ -90,14 +94,6 @@
     document.getElementById("register-message").textContent = "";
   }
 
-  function getUsers() {
-    return JSON.parse(localStorage.getItem("users") || "[]");
-  }
-
-  function saveUsers(users) {
-    localStorage.setItem("users", JSON.stringify(users));
-  }
-
   function handleRegister() {
     const username = document.getElementById("reg-user").value.trim();
     const email = document.getElementById("reg-email").value.trim();
@@ -110,17 +106,27 @@
       return;
     }
 
-    const users = getUsers();
-    if (users.some(u => u.username === username || u.email === email)) {
-      msg.textContent = "Usuario o correo ya registrado.";
-      return;
-    }
-
-    users.push({ username, email, password: btoa(pass) });
-    saveUsers(users);
-    msg.style.color = "green";
-    msg.textContent = "Registro exitoso. Ahora puedes iniciar sesión.";
-    setTimeout(toggleForms, 2000);
+    fetch('api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'register', username, email, password: pass })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        msg.style.color = "green";
+        msg.textContent = data.message;
+        setTimeout(toggleForms, 2000);
+      } else {
+        msg.style.color = "red";
+        msg.textContent = data.message;
+      }
+    })
+    .catch(error => {
+      msg.style.color = "red";
+      msg.textContent = "Error al comunicarse con el servidor.";
+      console.error('Error:', error);
+    });
   }
 
   function handleLogin() {
@@ -128,15 +134,31 @@
     const passInput = document.getElementById("login-pass").value;
     const msg = document.getElementById("login-message");
 
-    const users = getUsers();
-    const user = users.find(u => u.username === userInput || u.email === userInput);
-
-    if (user && btoa(passInput) === user.password) {
-      localStorage.setItem("loggedInUser", user.username);
-      window.location.href = "tienda.html";
-    } else {
-      msg.textContent = "Usuario o contraseña incorrectos.";
-    }
+    fetch('api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'login', userInput, password: passInput })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        localStorage.setItem("loggedInUser", data.username);
+        localStorage.setItem("userRole", data.role);
+        if (data.role === 'admin') {
+          window.location.href = "admin.html";
+        } else {
+          window.location.href = "tienda.html";
+        }
+      } else {
+        msg.style.color = "red";
+        msg.textContent = data.message;
+      }
+    })
+    .catch(error => {
+      msg.style.color = "red";
+      msg.textContent = "Error al comunicarse con el servidor.";
+      console.error('Error:', error);
+    });
   }
 </script>
 

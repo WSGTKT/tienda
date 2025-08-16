@@ -1,0 +1,173 @@
+body {
+      
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: rgb(0, 0, 0);
+      padding: 30px;
+      border-radius: 10px;
+      width: 350px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    h2 { text-align: center; color: #000000; }
+
+    input { 
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #000000;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #013e7e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover { background-color: #0056b3; }
+    .message {
+      color: rgb(237, 237, 237);
+      text-align: center;
+      margin-top: 10px;
+    }
+    .switch {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.9em;
+    }
+    .switch a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #676767;
+  margin: 0;
+}
+
+header {
+  background-color: #000000;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  position: relative;
+}
+
+#logoutBtn {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#cart {
+  position: absolute;
+  left: 20px;
+  top: 15px;
+  background-color: #28a745;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.game-store {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+}
+
+.game-card {
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 15px;
+  padding: 15px;
+  width: 220px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.game-card img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.game-card h3 {
+  margin: 10px 0 5px;
+}
+
+.game-card p {
+  color: #000000;
+}
+
+.game-card button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.game-card button:hover {
+  background-color: #0056b3;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 5;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.close {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#cart-items li {
+  margin: 10px 0;
+  font-size: 1em;
+}
+
+#cart-items button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: red;
+  font-size: 1.1em;
+}
